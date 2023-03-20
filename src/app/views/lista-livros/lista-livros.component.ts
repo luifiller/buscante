@@ -1,3 +1,4 @@
+import { Livro, LivrosResultado, Item, VolumeInfo, ImageLinks } from './../../models/interfaces';
 import { LivroService } from './../../service/livro.service';
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -9,10 +10,11 @@ import { Subscription } from 'rxjs';
 })
 export class ListaLivrosComponent implements OnDestroy{
 
-  listaLivros: [];
+  listaLivros: Livro[];
 
   campoBusca: string = '';
   subscription: Subscription;
+  livro: Livro;
 
   constructor(private service: LivroService) { }
 
@@ -22,10 +24,28 @@ export class ListaLivrosComponent implements OnDestroy{
       // (retornoAPI) => console.log(retornoAPI),
       // (error) => console.log(error),
 
-      next: retornoAPI => console.log(),
+      next: (items) => {
+        this.listaLivros = this.livrosResultadoParaLivros(items)
+      },
       error: erro => console.error(erro),
-      complete: () => console.log('Observable completado')
     });
+  }
+
+  livrosResultadoParaLivros(items): Livro[] {
+    const livros: Livro[] = [];
+
+    items.forEach(item => {
+      livros.push(this.livro = {
+        title: item.volumeInfo?.title,
+        authors: item.volumeInfo?.authors,
+        publisher: item.volumeInfo?.publisher,
+        publishedDate: item.volumeInfo?.publishedDate,
+        description: item.volumeInfo?.description,
+        previewLink: item.volumeInfo?.previewLink,
+        thumbnail: item.volumeInfo?.imageLinks?.thumbnail
+      })
+    });
+    return livros;
   }
 
   ngOnDestroy() {
