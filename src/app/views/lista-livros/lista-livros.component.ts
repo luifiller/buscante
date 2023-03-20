@@ -2,6 +2,7 @@ import { Livro, LivrosResultado, Item, VolumeInfo, ImageLinks } from './../../mo
 import { LivroService } from './../../service/livro.service';
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { LivroVolumeInfo } from 'src/app/models/livroVolumeInfo';
 
 @Component({
   selector: 'app-lista-livros',
@@ -31,21 +32,10 @@ export class ListaLivrosComponent implements OnDestroy{
     });
   }
 
-  livrosResultadoParaLivros(items): Livro[] {
-    const livros: Livro[] = [];
-
-    items.forEach(item => {
-      livros.push(this.livro = {
-        title: item.volumeInfo?.title,
-        authors: item.volumeInfo?.authors,
-        publisher: item.volumeInfo?.publisher,
-        publishedDate: item.volumeInfo?.publishedDate,
-        description: item.volumeInfo?.description,
-        previewLink: item.volumeInfo?.previewLink,
-        thumbnail: item.volumeInfo?.imageLinks?.thumbnail
-      })
-    });
-    return livros;
+  livrosResultadoParaLivros(items: Item[]): LivroVolumeInfo[] {
+    return items.map(item => {
+      return new LivroVolumeInfo(item)
+    })
   }
 
   ngOnDestroy() {
