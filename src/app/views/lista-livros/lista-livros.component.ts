@@ -22,7 +22,7 @@ export class ListaLivrosComponent implements OnDestroy{
       // (retornoAPI) => console.log(retornoAPI),
       // (error) => console.log(error),
 
-      next: retornoAPI => console.log(retornoAPI),
+      next: retornoAPI => console.log(),
       error: erro => console.error(erro),
       complete: () => console.log('Observable completado')
     });
