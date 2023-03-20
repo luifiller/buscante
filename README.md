@@ -1,6 +1,9 @@
 # Buscante
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.3.
+This project was developed during [Alura's course](https://cursos.alura.com.br/course/rxjs-angular-programando-forma-reativa) and was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.3.
+
+## API used
+The [Google Books API](https://developers.google.com/books) was used to facilitate the handling of HTTP responses, and also helped with the learning about `Observable`, `Observer` and `subscribe` concepts, including `pipe`, `tap` and `map` RxJS operators.
 
 ## Development server
 
