@@ -1,7 +1,7 @@
 import { Item } from './../../models/interfaces';
 import { LivroService } from './../../service/livro.service';
 import { Component } from '@angular/core';
-import { switchMap, map, tap, filter, debounceTime, distinctUntilChanged } from 'rxjs';
+import { switchMap, map, tap, filter, debounceTime, distinctUntilChanged, catchError, throwError, EMPTY } from 'rxjs';
 import { LivroVolumeInfo } from 'src/app/models/livroVolumeInfo';
 import { FormControl } from '@angular/forms';
 
@@ -16,6 +16,7 @@ export class ListaLivrosComponent{
 
   // FormControl é possível ter acesso a valores, status de validação e interações do usuário e eventos
   campoBusca = new FormControl();
+  mensagemErro = '';
 
   constructor(private service: LivroService) { }
 
@@ -33,7 +34,14 @@ export class ListaLivrosComponent{
     // O 'switchMap' utiliza apenas o último valor digitado para fazer a requisição, ele desconsidera os valores anteriormente inputados
     switchMap((valorDigitado) => this.service.buscar(valorDigitado)),
     tap(() => console.log('Requisição ao servidor: ')),
-    map(items => this.livrosResultadoParaLivros(items))
+    map(items => this.livrosResultadoParaLivros(items)),
+    catchError(erro => {
+      this.mensagemErro = 'Ops, ocorreu um erro. Recarregue a aplicação.'
+      return EMPTY;
+
+      // Ao invez do bloco de código acima, pode ser utilizado o 'throwError' para emitir imediatamente a mensagem de erro e, após isso, ele encerrar seu ciclo de vida
+      // return throwError(() => new Error(this.mensagemErro = 'Ops, ocorreu um erro. Recarregue a aplicação.'))
+    })
     )
 
   livrosResultadoParaLivros(items: Item[]): LivroVolumeInfo[] {
