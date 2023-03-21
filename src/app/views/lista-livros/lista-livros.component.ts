@@ -1,9 +1,11 @@
-import { Livro, Item } from './../../models/interfaces';
+import { Item } from './../../models/interfaces';
 import { LivroService } from './../../service/livro.service';
 import { Component } from '@angular/core';
-import { Subscription, switchMap, map, tap } from 'rxjs';
+import { switchMap, map, tap, filter, debounceTime } from 'rxjs';
 import { LivroVolumeInfo } from 'src/app/models/livroVolumeInfo';
 import { FormControl } from '@angular/forms';
+
+const PAUSA = 300;
 
 @Component({
   selector: 'app-lista-livros',
@@ -18,8 +20,12 @@ export class ListaLivrosComponent{
   constructor(private service: LivroService) { }
 
   livrosEncontrados$ = this.campoBusca.valueChanges.pipe(
-    // O 'switchMap' utiliza apenas o último valor digitado para fazer a requisição, ele desconsidera os valores anteriormente inputados
+    // O 'debounceTime' serve para dar um delay à busca para que o usuário consiga preencher o input e logo começar a buscar pela string inteira
+    debounceTime(PAUSA),
+    // O 'filter' recebe uma condição, a qual, se for satisfeita por um dado inserido/recebido, o fluxo de comandos segue.
+    filter((valorDigitado) => valorDigitado.length >= 3),
     tap(() => console.log('Fluxo Inicial: ')),
+    // O 'switchMap' utiliza apenas o último valor digitado para fazer a requisição, ele desconsidera os valores anteriormente inputados
     switchMap((valorDigitado) => this.service.buscar(valorDigitado)),
     tap(() => console.log('Requisição ao servidor: ')),
     map(items => this.livrosResultadoParaLivros(items))
